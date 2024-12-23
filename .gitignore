@@ -1,0 +1,17 @@
+# Exclure les fichiers de cache et de l'environnement virtuel
+__pycache__/
+*.pyc
+env/
+
+# Clés ou fichiers secrets
+*.key
+*.pem
+*.env
+
+# Fichiers système
+.DS_Store
+Thumbs.db
+
+# Configurations locales
+.vscode/
+.idea/

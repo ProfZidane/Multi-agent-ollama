@@ -23,6 +23,8 @@
     ```bash
     pip install -r requirements.txt
 
+4. Créer le dossier pour le stockage des vecteurs :
+    Créer à la racine le dossier **embeddings/** s'il existe pas !
 
 ## Utilisation
 

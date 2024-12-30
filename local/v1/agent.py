@@ -4,13 +4,13 @@ class Agent:
         self.name = name
         self.llm = llm
 
-    def query(self, question):
+    def query(self, question, relevant_docs):
         raise NotImplementedError("Chaque agent doit implémenter la méthode query.")
      
 
 
 class StudentAgent(Agent):
-    def query(self, question, etudiants_db):
+    def query(self, question, relevant_docs):
         # Utiliser le LLM pour répondre directement à la question
         prompt = f"""
         NE DONNE PAS PLUS D'INFORMATIONS QUE NÉCESSAIRE. REPONDS SEULEMENT À LA QUESTION :
@@ -18,7 +18,9 @@ class StudentAgent(Agent):
         EXEMPLE DE REPONSE : "Le prénom de l'étudiant avec l'ID 123 est Jean."
 
         Vous êtes un assistant étudiant. Répondez à cette question en utilisant les données suivantes sur les étudiants :
-        {etudiants_db}
+
+        Documents pertinents :
+        {relevant_docs}
         
         Question : {question}
         """
@@ -27,7 +29,7 @@ class StudentAgent(Agent):
     
 
 class CourseAgent(Agent):
-    def query(self, question, cours_db):
+    def query(self, question, relevant_docs):
         # Utiliser le LLM pour répondre directement à la question
         prompt = f"""
         NE DONNE PAS PLUS D'INFORMATIONS QUE NÉCESSAIRE. REPONDS SEULEMENT À LA QUESTION :
@@ -35,7 +37,9 @@ class CourseAgent(Agent):
         EXEMPLE DE REPONSE : "Les matières en Physique sont Mécanique, Thermodynamique, et Électricité."
         
         Vous êtes un assistant académique. Répondez à cette question en utilisant les données suivantes sur les cours :
-        {cours_db}
+
+        Documents pertinents :
+        {relevant_docs}
         
         Question : {question}
         """
@@ -52,7 +56,7 @@ class SupervisorAgent:
         self.course_agent = course_agent
         self.llm = llm
 
-    def route(self, question, etudiants_db, cours_db):
+    def route(self, question, relevant_docs):
         # Utiliser le LLM pour déterminer l'agent approprié
         prompt = f"""
         Vous êtes un superviseur pour un système multi-agent. Analysez cette question et identifiez si elle concerne un étudiant ou un cours :
@@ -65,10 +69,10 @@ class SupervisorAgent:
 
         if "étudiant" in response:
             print("Route 1")
-            return self.student_agent.query(question, etudiants_db)
+            return self.student_agent.query(question, relevant_docs)
         elif "cours" in response:
             print("Route 2")
-            return self.course_agent.query(question, cours_db)
+            return self.course_agent.query(question, relevant_docs)
         else:
             return "Je ne sais pas vers quel agent diriger votre question."
 
